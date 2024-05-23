@@ -1,7 +1,19 @@
 import PropTypes from "prop-types";
-import { memo } from "react";
+import { memo, useContext } from "react";
+import { CART_ACTION_TYPES, CartContext } from "./AppRouter";
 
 const ProductCard = ({ product, onClick }) => {
+  const { dispatch, cart } = useContext(CartContext);
+
+  const addtoCart = (e) => {
+    e.stopPropagation();
+    dispatch({ type: CART_ACTION_TYPES.ADD_TO_CART, payload: product });
+  };
+
+  const isProductPresentInCart = cart?.items?.find(
+    ({ id }) => id === product.id
+  );
+
   return (
     <div
       className="max-w-sm bg-white shadow-lg rounded-lg overflow-hidden py-5 mx-5"
@@ -20,7 +32,11 @@ const ProductCard = ({ product, onClick }) => {
         <p className="text-gray-700 text-base">${product.price}</p>
       </div>
       <div className="px-6 py-4">
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-500"
+          onClick={addtoCart}
+          disabled={isProductPresentInCart}
+        >
           Add to Cart
         </button>
       </div>
